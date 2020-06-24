@@ -88,7 +88,7 @@ class Client
      */
     public static function deserialize($data, $class)
     {
-        if (null == $data) {
+        if (null === $data) {
             $deserialized = null;
         } elseif ('array[' == substr($class, 0, 6)) {
             $subClass = substr($class, 6, -1);
@@ -99,7 +99,7 @@ class Client
             $deserialized = $values;
         } elseif ('\DateTime' == $class) {
             $deserialized = new \DateTime('@' . ($data / 1000), new \DateTimeZone('UTC'));
-        } elseif (in_array($class, array('string', 'int', 'float', 'bool'))) {
+        } elseif (in_array($class, array('string', 'int', 'float', 'boolean','bool'))) {
             settype($data, $class);
             $deserialized = $data;
         } else {

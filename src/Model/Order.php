@@ -24,19 +24,39 @@ use \JsonSerializable;
 class Order implements JsonSerializable
 {
     static $dataTypes = array(
+        'createdAt' => '\DateTime',
+        'updatedAt' => '\DateTime',
         'id' => 'string',
+        'token' => 'string',
         'interval' => '\Budbee\Model\OrderInterval',
         'cart' => '\Budbee\Model\Cart',
-        'edi' => '\Budbee\Model\EDI',
         'collection' => '\Budbee\Model\Contact',
-        'delivery' => '\Budbee\Model\Contact'
+        'delivery' => '\Budbee\Model\Contact',
+        'signatureRequired' => 'bool',
+        'additionalServices' => '\Budbee\Model\AdditionalServices',
+        'parcels' => 'array[\Budbee\Model\Parcel]'
     );
+
+    /**
+     * @var \DateTime
+     */
+    public $createdAt;
+
+    /**
+     * @var \DateTime
+     */
+    public $updatedAt;
 
     /**
      * Order ID
      * @var string
      */
     public $id;
+
+    /**
+     * @var string
+     */
+    public $token;
 
     /**
      * Order interval.
@@ -51,12 +71,6 @@ class Order implements JsonSerializable
     public $cart;
 
     /**
-     * EDI
-     * @var \Budbee\Model\EDI
-     */
-    public $edi;
-
-    /**
      * Collection contact information.
      * @var \Budbee\Model\Contact
      */
@@ -68,15 +82,37 @@ class Order implements JsonSerializable
      */
     public $delivery;
 
+    /**
+     * @var bool
+     */
+    public $signatureRequired;
+
+    /**
+     * @var \Budbee\Model\AdditionalServices
+     */
+    public $additionalServices;
+
+    /**
+     * @var array[\Budbee\Model\Parcel]
+     */
+    public $parcels;
+
+
+
     public function jsonSerialize()
     {
     	return array(
-    		'id' => $this->id,
+            'createdAt' => $this->createdAt->format('U') * 1000,
+            'updatedAt' => $this->updatedAt->format('U') * 1000,
+            'id' => $this->id,
+            'token' => $this->token,
     		'interval' => $this->interval,
     		'cart' => $this->cart,
-    		'edi' => $this->edi,
     		'collection' => $this->collection,
-    		'delivery' => $this->delivery
+    		'delivery' => $this->delivery,
+            'signatureRequired' => $this->signatureRequired,
+            'additionalServices' => $this->additionalServices,
+            'parcels' => $this->parcels
     	);
     }
 }

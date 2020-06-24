@@ -74,8 +74,8 @@ class OrderApi
         $method = Client::$POST;
         $queryParams = array();
         $headerParams = array(
-            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
-            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
         );
 
         //make the API Call
@@ -93,13 +93,42 @@ class OrderApi
     }
 
     /**
-     * Edit an order
-     * Deprecated
+     * @param $id string
+     * @param $body array[\Budbee\Model\ParcelRequest]
+     * @return array[\Budbee\Model\Parcel]
+     * @throws BudbeeException
      */
-    public function editOrder($id, $body)
+    public function addParcels($id, $body)
     {
-        throw new BudbeeException("`editOrder` has been deprecated. Please use `editDeliveryContact` and `editDeliveryAddress` to update an Order");
+        //parse inputs
+        $resourcePath = "/multiple/orders/{id}/parcels";
+        $method = Client::$POST;
+        $queryParams = array();
+        $headerParams = array(
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
+        );
+
+        if (!isset($id)) {
+            throw new BudbeeException("Id cannot be null");
+        }
+
+        $resourcePath = str_replace("{id}", $this->apiClient->toPathValue($id), $resourcePath);
+
+        //make the API Call
+        if (!isset($body)) {
+            throw new BudbeeException("Body cannot be null");
+        }
+        $response = $this->apiClient->callAPI($resourcePath, $method, $queryParams, $body, $headerParams);
+
+        if (!$response) {
+            return null;
+        }
+
+        $responseObject = $this->apiClient->deserialize($response, 'array[\Budbee\Model\Parcel]');
+        return $responseObject;
     }
+
 
     /**
      * Edit an the delivery contact of an order
@@ -114,8 +143,8 @@ class OrderApi
         $method = Client::$PUT;
         $queryParams = array();
         $headerParams = array(
-            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
-            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
         );
 
         if (!isset($id)) {
@@ -151,8 +180,8 @@ class OrderApi
         $method = Client::$PUT;
         $queryParams = array();
         $headerParams = array(
-            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
-            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
         );
 
         if (!isset($id)) {
@@ -187,8 +216,8 @@ class OrderApi
         $method = Client::$DELETE;
         $queryParams = array();
         $headerParams = array(
-            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
-            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
         );
 
         if (null != $id) {
@@ -274,8 +303,8 @@ class OrderApi
         }
 
         $headerParams = array(
-            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
-            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+            'Accept' => 'application/vnd.budbee.multiple.orders-v2+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v2+json'
         );
 
         //make the API Call
@@ -291,6 +320,36 @@ class OrderApi
         $responseObject = $this->apiClient->deserialize($response, 'array[\Budbee\Model\Order]');
         return $responseObject;
     }
+
+    public function getTrackingUrl($id)
+    {
+        //parse inputs
+        $resourcePath = "/multiple/orders/{id}/tracking-url";
+        $method = Client::$GET;
+        $queryParams = array();
+        $headerParams = array(
+            'Accept' => 'application/vnd.budbee.multiple.orders-v1+json',
+            'Content-Type' => 'application/vnd.budbee.multiple.orders-v1+json'
+        );
+
+        if (null != $id) {
+            $resourcePath = str_replace("{id}", $this->apiClient->toPathValue($id), $resourcePath);
+        }
+
+        //make the API Call
+        if (!isset($body)) {
+            $body = null;
+        }
+        $response = $this->apiClient->callAPI($resourcePath, $method, $queryParams, $body, $headerParams);
+
+        if (!$response) {
+            return null;
+        }
+
+        $responseObject = $this->apiClient->deserialize($response, '\Budbee\Model\TrackingUrl');
+        return $responseObject;
+    }
+
 
     private function arrayContainsNull($orders)
     {

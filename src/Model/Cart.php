@@ -24,9 +24,7 @@ use \JsonSerializable;
 class Cart implements JsonSerializable
 {
     static $dataTypes = array(
-        'cartId' => 'string',
-        'articles' => 'array[\Budbee\Model\Article]',
-        'dimensions' => '\Budbee\Model\Dimensions'
+        'cartId' => 'string'
     );
 
     /**
@@ -35,24 +33,10 @@ class Cart implements JsonSerializable
      */
     public $cartId;
 
-    /**
-     * List of articles belonging to this cart.
-     * @var array[\Budbee\Model\Article]
-     */
-    public $articles;
-
-    /**
-     * The dimensions of the entire shipment.
-     * @var \Budbee\Model\Dimensions
-     */
-    public $dimensions;
-
     public function jsonSerialize()
     {
     	return array(
-    		'cartId' => $this->cartId,
-    		'articles' => $this->articles,
-    		'dimensions' => $this->dimensions
+    		'cartId' => $this->cartId
     	);
     }
 }

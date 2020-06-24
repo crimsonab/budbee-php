@@ -26,9 +26,10 @@ class OrderRequest implements JsonSerializable
     static $dataTypes = array(
         'interval' => '\Budbee\Model\OrderInterval',
         'cart' => '\Budbee\Model\Cart',
-        'edi' => '\Budbee\Model\EDI',
         'collectionId' => 'int',
-        'delivery' => '\Budbee\Model\Contact'
+        'delivery' => '\Budbee\Model\Contact',
+        'requireSignature' => 'boolean',
+        'additionalServices' => '\Budbee\Model\AdditionalServices'
     );
 
     /**
@@ -44,12 +45,6 @@ class OrderRequest implements JsonSerializable
     public $cart;
 
     /**
-     * EDI
-     * @var \Budbee\Model\EDI
-     */
-    public $edi;
-
-    /**
      * Collection contact id.
      * @var int
      */
@@ -61,14 +56,28 @@ class OrderRequest implements JsonSerializable
      */
     public $delivery;
 
+    /**
+     * Delivery contact information.
+     * @var boolean
+     */
+    public $requireSignature;
+
+    /**
+     * Additional Services
+     * @var \Budbee\Model\AdditionalServices
+     */
+    public $additionalServices;
+
+
     public function jsonSerialize()
     {
     	return array(
     		'interval' => $this->interval,
     		'cart' => $this->cart,
-    		'edi' => $this->edi,
     		'collectionId' => $this->collectionId,
-    		'delivery' => $this->delivery
-    	);
+            'delivery' => $this->delivery,
+            'requireSignature' => $this->requireSignature,
+            'additionalServices' => $this->additionalServices
+        );
     }
 }
