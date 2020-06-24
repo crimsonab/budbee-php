@@ -9,11 +9,11 @@ Add budbee-php to your `composer.json` file
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/budbee/budbee-php"
+            "url": "https://github.com/crimsonab/budbee-php"
         }
     ],
     "require": {
-        "budbee/api-client": "dev-master"
+        "budbee/api-client": "master"
     }
 }
 ```
@@ -38,10 +38,10 @@ Require the wrapper
   $apiKey = '<YOUR_API_KEY>';
   $apiSecret = '<YOUR_API_SECRET>';
 
-  $client = new \Budbee\Client($apiKey, $apiSecret, Budbee\Client::$SANDBOX);
-  $postalCodesAPI = new \Budbee\PostalcodesApi($client);
-  $intervalAPI = new \Budbee\IntervalApi($client);
-  $orderAPI = new \Budbee\OrderApi($client);
+  $api = new \Budbee\Client($apiKey, $apiSecret, Budbee\Client::$SANDBOX);
+  $postalCodesAPI = new \Budbee\PostalcodesApi($api);
+  $intervalAPI = new \Budbee\IntervalApi($api);
+  $orderAPI = new \Budbee\OrderApi($api);
 ?>
 ```
 
@@ -49,7 +49,7 @@ Require the wrapper
 
 ```php
 try {
-    $possibleCollectionPoints = $postalCodesAPI->checkPostalCode('SE', '11453');
+    $possibleCollectionPoints = $postalCodesAPI->checkPostalCode('11453','SE');
 } catch (\Budbee\Exception\BudbeeException $e) {
     die('Budbee does not deliver to specified Postal Code');
 }
@@ -59,7 +59,7 @@ try {
 
 ```php
 try {
-    $intervalResponse = $intervalAPI->getIntervals($deliveryAddress->country, $deliveryAddress->postalCode, 2);
+    $intervalResponse = $intervalAPI->getIntervals('11453','SE', 2);
 } catch (\Budbee\Exception\BudbeeException $e) {
     die('No upcoming delivery intervals');
 }
@@ -81,39 +81,22 @@ $order->interval = $interval;
 $order->collectionId = $collectionPointId;
 
 // Create Cart Object
-$cart = new \Budbee\Model\Cart();
-$cart->cartId = '12345';
-
-// Create an Article
-$article = new \Budbee\Model\Article();
-$article->name = 'T-Shirt';
-$article->reference = '61252123';
-$article->quantity = 1;
-$article->unitPrice = 4900;
-$article->discountRate = 0;
-$article->taxRate = 2500;
-
-$cart->articles = [$article];
-
-$order->cart = $cart;
+$order->cart = new \Budbee\Model\Cart();
+$order->cart->cartId = '12345';
 
 // Specify Delivery information
-$deliveryContact = new \Budbee\Model\Contact();
-$deliveryContact->name = 'John Doe';
-$deliveryContact->telephoneNumber = '00 123 45 67';
-$deliveryContact->email = 'john.doe@budbee.com';
-$deliveryContact->doorCode = '0000';
-$deliveryContact->outsideDoor = true;
+$order->delivery = new \Budbee\Model\Contact();;
+$order->delivery->name = 'John Doe';
+$order->delivery->telephoneNumber = '00 123 45 67';
+$order->delivery->email = 'john.doe@budbee.com';
+$order->delivery->doorCode = '0000';
+$order->delivery->outsideDoor = true;
 
-$deliveryAddress = new \Budbee\Model\Address();
-$deliveryAddress->street = 'Grevgatan 9';
-$deliveryAddress->postalCode = '11453';
-$deliveryAddress->city = 'Stockholm';
-$deliveryAddress->country = 'SE';
-
-$deliveryContact->address = $deliveryAddress;
-
-$order->delivery = $deliveryContact;
+$order->delivery->address = new \Budbee\Model\Address();
+$order->delivery->address->street = 'Grevgatan 9';
+$order->delivery->address->postalCode = '11453';
+$order->delivery->address->city = 'Stockholm';
+$order->delivery->address->country = 'SE';
 
 $createdOrder = $orderAPI->createOrder($order);
 
