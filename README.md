@@ -106,7 +106,7 @@ echo 'Created Order';
 # Edit the delivery contact of an order
 
 ```php
-$order = $orderAPI->createOrder($data);
+$order = $orderAPI->createOrder($order);
 $deliveryContact = $order->delivery;
 $deliveryContact->name = 'Jane Doe';
 
